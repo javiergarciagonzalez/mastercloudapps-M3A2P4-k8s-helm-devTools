@@ -72,20 +72,4 @@ spec:
   selector:
     app: mongodb
   type: ClusterIP
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: mongodb-from-topo
-spec:
-  podSelector:
-    matchLabels:
-      app: mongodb
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: toposervice
-    ports:
-    - port: 27017
-      protocol: TCP
+
