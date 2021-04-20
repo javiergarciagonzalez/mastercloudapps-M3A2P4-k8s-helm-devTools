@@ -1,0 +1,65 @@
+app:
+  ingress: true
+  domain: cluster-ip
+  withVolumes: true
+
+nameOverride: "Eolo"
+fullnameOverride: "Eoloplanner"
+
+topoPort: "topo-port"
+serverPort: "server-port"
+weatherPort: "weather-port"
+
+
+mongo:
+  image: mongo:4.2.12-bionic
+  volumes:
+    name: mongo
+    hostPath: /db/mongo
+    storage: 1Gi
+  envVars:
+    - key: MONGO_INITDB_DATABASE
+      value: topoDB
+    - key: MONGO_INITDB_ROOT_USERNAME
+      value: root
+    - key: MONGO_INITDB_ROOT_PASSWORD
+      value: password
+
+# ingress:
+#   domain: cluster-ip
+#   noIngressType: NodePort #or LoadBalancer
+
+# createVolumes: true
+# createNetworkPolicies: true
+
+# overrideStorageClassMongo: ""
+# overrideStorageClassMysql: ""
+# overrideStorageClassRabbit: ""
+
+# images:
+#   mongodb:
+#     image: mongo
+#     version: 4.2.12-bionic
+#   mysql:
+#     image: mysql
+#     version: 8.0.22
+#   planner:
+#     image: sanguino/eolo-planner-plannerservice
+#     version: 2.0.0
+#   rabbitmq:
+#     image: rabbitmq
+#     version: 3-management
+#   server:
+#     image: oscarsotosanchez/server
+#     version: v1.0
+#   toposervice:
+#     image: oscarsotosanchez/toposervice
+#     version: v1.0
+#   weatherservice:
+#     image: oscarsotosanchez/weatherservice
+#     version: v1.0
+
+# password:
+#   mysql: ""
+#   mongodb: ""
+#   rabbit: ""
