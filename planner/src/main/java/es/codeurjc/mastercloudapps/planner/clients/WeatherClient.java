@@ -22,7 +22,6 @@ public class WeatherClient {
         GetWeatherRequest request = GetWeatherRequest.newBuilder()
                 .setCity(city)
                 .build();
-
         Weather response = this.client.getWeather(request);
 
         return CompletableFuture.completedFuture(response.getWeather());
