@@ -1,0 +1,14 @@
+{{- if .Values.app.withVolumes }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Release.Name }}-mongo-pv
+spec:
+  storageClassName: {{ .Values.mongo.volumes.name }}
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  hostPath:
+    path: {{ .Values.mongo.volumes.hostPath }}
+{{- end }}

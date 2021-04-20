@@ -1,0 +1,62 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-mongodb-deploy
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-mongodb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-mongodb
+        instance: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: mongodb
+        image: {{ .Values.mongo.image }}
+        env:
+        {{- range $.Values.mongo.envVars }}
+        - name: {{ .key }}
+          value: {{ .value }}
+        {{- end }}
+        ports:
+        - containerPort: 27017
+        - containerPort: 27018
+        - containerPort: 27019
+        volumeMounts:
+        - mountPath: /data/db
+          name: datadb
+      volumes:
+      - name: datadb
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-mongo-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-mongodb-service
+  labels:
+    app: {{ .Release.Name }}-mongodb
+spec:
+  ports:
+  - port: 27017
+    targetPort: 27017
+    protocol: TCP
+    name: {{ .Release.Name }}-mongodb-port-27017
+  - port: 27018
+    targetPort: 27018
+    protocol: TCP
+    name: {{ .Release.Name }}-mongodb-port-27018
+  - port: 27019
+    targetPort: 27019
+    protocol: TCP
+    name: {{ .Release.Name }}-mongodb-port-27019
+  selector:
+    app: mongodb
+  type: ClusterIP
+
