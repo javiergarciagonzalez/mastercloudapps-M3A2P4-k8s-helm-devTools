@@ -1,0 +1,55 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-rabbitmq-deploy
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app:  {{ .Release.Name }}-rabbitmq
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-rabbitmq
+    spec:
+      containers:
+      - name: {{ .Release.Name }}-rabbitmq
+        image: rabbitmq:3-management
+        env:
+        {{- range $.Values.rabbitmq.envVars }}
+        - name: {{ .key }}
+          value: {{ .value }}
+        {{- end }}
+        ports:
+        - containerPort: 5672
+        - containerPort: 15672
+        volumeMounts:
+        - mountPath: /var/lib/rabbitmq/mnesia
+          name: datarabbit
+      volumes:
+      - name: datarabbit
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-rabbit-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-rabbitmq-service
+  labels:
+    app: {{ .Release.Name }}-rabbitmq
+spec:
+  ports:
+  - port: 5672
+    targetPort: 5672
+    protocol: TCP
+    name: {{ .Values.ports.rabbitmqPort }}-5672
+  - port: 15672
+    targetPort: 15672
+    protocol: TCP
+    name: {{ .Values.ports.rabbitmqPort }}-15672
+  selector:
+    app: {{ .Release.Name }}-rabbitmq
+  type: ClusterIP

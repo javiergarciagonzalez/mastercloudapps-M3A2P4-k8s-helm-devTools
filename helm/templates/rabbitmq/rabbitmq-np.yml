@@ -1,0 +1,22 @@
+{{- if .Values.app.withNetworkPolicies }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Release.Name }}-rabbitmq-from-planner-server
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ .Release.Name }}-rabbitmq
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: {{ .Release.Name }}-planner
+    - podSelector:
+        matchLabels:
+          app: {{ .Release.Name }}-server
+    ports:
+    - port: 5672
+      protocol: TCP
+{{- end }}
