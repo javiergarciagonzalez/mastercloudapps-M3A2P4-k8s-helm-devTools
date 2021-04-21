@@ -78,8 +78,8 @@ rabbitmq:
 
 planner:
   image:
-    name: oscarsotosanchez/planner
-    version: v1.0
+    name: "javiergarciagon/eoloplanner-planner-modified"
+    version: "v.2.0.0"
   envVars:
     - name: TOPO_HOST
       value: toposervice-service
@@ -95,3 +95,9 @@ planner:
       value: root
     - name: SPRING_RABBITMQ_PASSWORD
       value: password
+
+topo:
+  image:
+    name: "oscarsotosanchez/toposervice"
+    version: "v1.0"
+  envVars:

@@ -1,40 +1,37 @@
-{{- if .Values.withNetworkPolicies }}
+{{- if .Values.app.withNetworkPolicies }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: {{ .Release.Name }}-server-to-mysql-rabbit
+  name: {{ .Release.Name }}-topo-to-mongodb
 spec:
   podSelector:
     matchLabels:
-      app: {{ .Release.Name }}-server
+      app: {{ .Release.Name }}-toposervice
   egress:
   - to:
     - podSelector:
         matchLabels:
-          app: {{ .Release.Name }}-mysql
+          app: {{ .Release.Name }}-mongodb
     ports:
-    - port: 3306
+    - port: 27017
       protocol: TCP
-  - to:
-    - podSelector:
-        matchLabels:
-          app: {{ .Release.Name }}-rabbitmq
-    ports:
-    - port: 5672
-      protocol: TCP
+
 {{- if .Values.app.ingress }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: {{ .Release.Name }}-server-from-ingress
+  name: {{ .Release.Name }}-topo-from-planner-ingress
 spec:
   podSelector:
     matchLabels:
-      app: {{ .Release.Name }}-server
+      app: {{ .Release.Name }}-toposervice
   ingress:
   - from:
+    - podSelector:
+        matchLabels:
+          app: {{ .Release.Name }}-planner
     - namespaceSelector:
         matchLabels:
           kubernetes.io/metadata.name: kube-system
@@ -43,21 +40,19 @@ spec:
           app.kubernetes.io/name: ingress-nginx
     ports:
     - protocol: TCP
-      port: 3000
+      port: 8080
 {{- else }}
----
-apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
 metadata:
-  name: {{ .Release.Name }}-server-from-network
+  name: {{ .Release.Name }}-toposervice-from-network
 spec:
   podSelector:
     matchLabels:
-      app: {{ .Release.Name }}-server
+      app: {{ .Release.Name }}-toposervice
   ingress:
   - ports:
     - protocol: TCP
-      port: 3000
+      port: 8080
 {{- end }}
 {{- end }}
-
