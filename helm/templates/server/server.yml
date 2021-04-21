@@ -20,7 +20,7 @@ spec:
         runAsUser: 1001
       restartPolicy: Always
       containers:
-      - name: server
+      - name: {{ .Release.Name }}-server
         image: {{ .Values.server.image.name }}:{{ .Values.server.image.version }}
         command: ["bash"]
         args:

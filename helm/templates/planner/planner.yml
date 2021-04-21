@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-planner-deploy
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-planner
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-planner
+        dns-policy: {{ .Release.Name }}-enabled
+    spec:
+      securityContext:
+        runAsUser: 1001
+      restartPolicy: Always
+      containers:
+      - name: {{ .Release.Name }}-planner
+        image: {{ .Values.planner.image.name }}:{{ .Values.planner.image.version }}
+        env:
+        {{- range $.Values.planner.envVars }}
+        - name: {{ .key }}
+          value: {{ .value }}
+        {{- end }}
