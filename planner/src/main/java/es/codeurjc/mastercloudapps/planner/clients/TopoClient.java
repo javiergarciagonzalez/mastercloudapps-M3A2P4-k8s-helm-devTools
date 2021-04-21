@@ -11,12 +11,12 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 public class TopoClient {
-
-    @Value("${toposervice.host}")
+    
+    @Value("${TOPO_HOST:localhost}")
     private String TOPO_HOST;
-
-    @Value("${toposervice.port}")
-    private String TOPO_PORT;
+    
+    @Value("${TOPO_PORT:8080}")
+    private int TOPO_PORT;
 
     @Async
     public CompletableFuture<String> getLandscape(String city) {
