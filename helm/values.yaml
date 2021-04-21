@@ -1,6 +1,6 @@
 app:
-  ingress: false
-  serverTypeWithoutIngress: Nodeport
+  ingress: true
+  serverTypeWithoutIngress: NodePort
   domain: cluster-ip
   withVolumes: true
   withNetworkPolicies: false
