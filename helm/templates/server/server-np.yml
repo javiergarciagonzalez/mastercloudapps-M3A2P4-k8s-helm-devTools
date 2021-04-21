@@ -1,0 +1,63 @@
+{{- if .Values.withNetworkPolicies }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Release.Name }}-server-to-mysql-rabbit
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ .Release.Name }}-server
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: {{ .Release.Name }}-mysql
+    ports:
+    - port: 3306
+      protocol: TCP
+  - to:
+    - podSelector:
+        matchLabels:
+          app: {{ .Release.Name }}-rabbitmq
+    ports:
+    - port: 5672
+      protocol: TCP
+  {{- if .Values.app.ingress }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Release.Name }}-server-from-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ .Release.Name }}-server
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: ingress-nginx
+    ports:
+    - protocol: TCP
+      port: 3000
+{{- else }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Release.Name }}-server-from-network
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ .Release.Name }}-server
+  ingress:
+  - ports:
+    - protocol: TCP
+      port: 3000
+{{- end }}
+{{- end }}
+

@@ -1,0 +1,27 @@
+{{- if .Values.app.ingress }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: multi-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+  - host: {{ .Values.app.domain }}
+    http:
+      paths:
+      - path: /(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ .Release.Name }}-server-service
+            port:
+              name: {{ .Values.ports.serverPort }}
+      - path: /toposervice/(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ .Release.Name }}-toposervice-service
+            port:
+              name: {{ .Values.ports.topoPort }}
+{{- end }}

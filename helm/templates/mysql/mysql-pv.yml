@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Release.Name }}-mysql-pv
+spec:
+  {{- if .Values.app.withVolumes }}
+  storageClassName: {{ .Values.mysql.volumes.name }}
+  {{- end}}
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: {{ .Values.mysql.volumes.storage }}
+  hostPath:
+    path: {{ .Values.mysql.volumes.hostPath }}
