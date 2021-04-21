@@ -1,9 +1,9 @@
 app:
-  ingress: true
+  ingress: false
   serverTypeWithoutIngress: Nodeport
   domain: cluster-ip
   withVolumes: true
-  withNetworkPolicies: true
+  withNetworkPolicies: false
 
 nameOverride: "Eolo"
 fullnameOverride: "Eoloplanner"
@@ -25,11 +25,11 @@ mongo:
     hostPath: "/db/mongo"
     storage: 1Gi
   envVars:
-    - key: MONGO_INITDB_DATABASE
-      value: topoDB
-    - key: MONGO_INITDB_ROOT_USERNAME
-      value: root
-    - key: MONGO_INITDB_ROOT_PASSWORD
+    - name: MONGO_INITDB_DATABASE
+      value: "topoDB"
+    - name: MONGO_INITDB_ROOT_USERNAME
+      value: "root"
+    - name: MONGO_INITDB_ROOT_PASSWORD
       value: password
 
 server:
@@ -37,16 +37,12 @@ server:
     name: oscarsotosanchez/server
     version: v1.0
   envVars:
-    - name: MYSQL_HOST
-      value: mysql-service
     - name: MYSQL_DB
-      value: eoloplantsDB
+      value: "eoloplantsDB"
     - name: MYSQL_USER
-      value: root
+      value: "root"
     - name: MYSQL_PASS
       value: password
-    - name: RABBITMQ_URL
-      value: amqp://root:password@rabbitmq-service
 
 mysql:
   image:
@@ -58,9 +54,9 @@ mysql:
     storage: 1Gi
   envVars:
     - name: MYSQL_ROOT_PASSWORD
-      value: password # TODO: THIS SHOULD BE RANDOM
+      value: password
     - name: MYSQL_DATABASE
-      value: eoloplantsDB
+      value: "eoloplantsDB"
 
 rabbitmq:
   image:
@@ -72,27 +68,21 @@ rabbitmq:
     storage: 1Gi
   envVars:
     - name: RABBITMQ_DEFAULT_USER
-      value: root
+      value: "root"
     - name: RABBITMQ_DEFAULT_PASS
-      value: password # TODO: THIS SHOULD BE RANDOM
+      value: password
 
 planner:
   image:
     name: "javiergarciagon/eoloplanner-planner-modified"
-    version: "v.2.0.0"
+    version: "v.2.0.1"
   envVars:
-    - name: TOPO_HOST
-      value: toposervice-service
     - name: TOPO_PORT
       value: "8080"
-    - name: GRPC_CLIENT_WEATHERSERVER_ADDRESS
-      value: static://weatherservice-service:9090
-    - name: SPRING_RABBITMQ_HOST
-      value: rabbitmq-service
     - name: SPRING_RABBITMQ_PORT
       value: "5672"
     - name: SPRING_RABBITMQ_USERNAME
-      value: root
+      value: "root"
     - name: SPRING_RABBITMQ_PASSWORD
       value: password
 
@@ -101,3 +91,18 @@ topo:
     name: "oscarsotosanchez/toposervice"
     version: "v1.0"
   envVars:
+    - name: SPRING_DATA_MONGODB_PORT
+      value: 27017
+    - name: SPRING_DATA_MONGODB_DATABASE
+      value: topoDB
+    - name: SPRING_DATA_MONGODB_AUTHENTICATION-DATABASE
+      value: admin
+    - name: SPRING_DATA_MONGODB_USERNAME
+      value: root
+    - name: SPRING_DATA_MONGODB_PASSWORD
+      value: password
+
+weather:
+  image:
+    name: "oscarsotosanchez/weatherservice"
+    version: "v1.0"

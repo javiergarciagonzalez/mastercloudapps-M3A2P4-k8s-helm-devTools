@@ -20,8 +20,8 @@ spec:
         image: {{ .Values.mysql.image.name }}:{{ .Values.mysql.image.version }}
         env:
         {{- range $.Values.mysql.envVars }}
-        - name: {{ .key }}
-          value: {{ .value }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
         {{- end }}
         ports:
         - containerPort: 3306

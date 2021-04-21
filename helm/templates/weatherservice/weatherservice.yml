@@ -20,7 +20,7 @@ spec:
       restartPolicy: Always
       containers:
       - name: weatherservice
-        image: {{.Values.images.weather.image }}:{{.Values.images.weather.version }}
+        image: {{.Values.weather.image.name }}:{{.Values.weather.image.version }}
         env:
         - name: GRPC_HOST
           valueFrom:

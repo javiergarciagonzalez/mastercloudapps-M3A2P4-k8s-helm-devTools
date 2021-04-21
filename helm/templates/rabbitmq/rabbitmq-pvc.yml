@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Release.Name }}-rabbit-pvc
+  name: {{ .Release.Name }}-rabbitmq-pvc
 spec:
   {{- if .Values.app.withVolumes }}
   storageClassName: {{ .Values.rabbitmq.volumes.name }}

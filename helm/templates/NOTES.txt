@@ -1,0 +1,22 @@
+First make sure you've run these commands, in order to have a local cluster up and running in minikube
+
+  $ minikube start --driver='virtualbox' --addons ingress --cni=cilium
+  $ minikube addons enable ingress
+  $ kubectl label namespace kube-system kubernetes.io/metadata.name=kube-system
+  $ minikube ip
+  $ sudo vim /etc/hosts
+
+With Ingress:
+
+{{- if .Values.app.ingress }}
+
+  Server: http://{{ .Values.app.domain }}/
+  Toposervice: http://{{ .Values.app.domain }}/toposervice/api/topographicdetails/Madrid
+
+{{- else }}
+
+  minikube service --url {{ .Release.Name }}-server-service
+  minikube service --url {{ .Release.Name }}-toposervice-service
+
+
+{{- end }}

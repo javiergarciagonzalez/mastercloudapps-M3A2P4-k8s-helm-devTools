@@ -26,13 +26,17 @@ spec:
         args:
         - "-c"
         - "./wait-for-it.sh {{ .Release.Name }}-mysql-service:3306 -t 500 -- ./wait-for-it.sh {{ .Release.Name }}-rabbitmq-service:5672 -t 500 -- node src/server.js"
-        env:
-        {{- range $.Values.server.envVars }}
-        - name: {{ .key }}
-          value: {{ .value }}
-        {{- end }}
         ports:
         - containerPort: 3000
+        env:
+        {{- range $.Values.server.envVars }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
+        {{- end }}
+        - name: MYSQL_HOST
+          value: {{ .Release.Name }}-mysql-service
+        - name: RABBITMQ_URL
+          value: "amqp://root:password@{{ .Release.Name }}-rabbitmq-service" 
 ---
 apiVersion: v1
 kind: Service

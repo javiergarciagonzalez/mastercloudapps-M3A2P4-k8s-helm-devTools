@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ .Release.Name }}-rabbit-pv
+  name: {{ .Release.Name }}-rabbitmq-pv
 spec:
   {{- if .Values.app.withVolumes }}
-  storageClassName: {{ .Values.rabbitmw.volumes.name }}
-  {{- end}} }}-
+  storageClassName: {{ .Values.rabbitmq.volumes.name }}
+  {{- end }}
   accessModes:
   - ReadWriteOnce
   capacity:
-    storage: {{ .Values.rabbitmw.volumes.storage }}
+    storage: {{ .Values.rabbitmq.volumes.storage }}
   hostPath:
-    path: {{ .Values.rabbitmw.volumes.hostPath }}
+    path: {{ .Values.rabbitmq.volumes.hostPath }}

@@ -23,7 +23,13 @@ spec:
       - name: {{ .Release.Name }}-planner
         image: {{ .Values.planner.image.name }}:{{ .Values.planner.image.version }}
         env:
+        - name: TOPO_HOST
+          value: {{ .Release.Name }}-toposervice-service
+        - name: GRPC_CLIENT_WEATHERSERVER_ADDRESS
+          value: static://{{ .Release.Name }}-weatherservice-service:9090
+        - name: SPRING_RABBITMQ_HOST
+          value: {{ .Release.Name }}-rabbitmq-service
         {{- range $.Values.planner.envVars }}
-        - name: {{ .key }}
-          value: {{ .value }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
         {{- end }}

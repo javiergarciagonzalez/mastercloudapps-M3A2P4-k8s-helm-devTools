@@ -23,9 +23,11 @@ spec:
       - name: {{ .Release.Name }}-toposervice
         image: {{ .Values.topo.image.name }}:{{ .Values.topo.image.version }}
         env:
+        - name: SPRING_DATA_MONGODB_HOST
+          value: {{ .Release.Name }}-mongodb-service
         {{- range $.Values.topo.envVars }}
-        - name: {{ .key }}
-          value: {{ .value }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
         {{- end }}
         ports:
         - containerPort: 8080
